@@ -1,41 +1,27 @@
-const fs = require('fs');
-const http = require('http');
+const express = require('express')
+const app = express();
 
-const server = http.createServer((req, res) => {
-  console.log(req.url, req.method);
+app.get('/', (req, res) => {
+  res.sendFile('./index.html', { root: __dirname });
+})
 
-  res.setHeader('constent-type', 'test/html');
+app.get('/about', (req, res) => {
+  res.sendFile('./about.html', { root: __dirname });
+})
 
-  let path;
-  
-  switch(req.url) {
-    case '/':
-      path = 'index.html';
-      res.statusCode = 200;
-      break;
-    case '/about':
-      path = 'about.html';
-      res.statusCode = 200;
-      break;
-    case '/contact-me':
-      path = 'contact-me.html'
-      res.statusCode = 200;
-      break;
-    default:
-      path = '404.html';
-      res.statusCode = '404';
-      break;
+app.get('/contact-me', (req, res) => {
+  res.sendFile('./contact-me.html', { root: __dirname });
+})
+
+app.use((req, res) => {
+  res.sendFile('./404.html', { root: __dirname })
+})
+
+const PORT = 8080;
+app.listen(PORT, (error) => {
+   if (error) {
+    throw error;
   }
-
-  fs.readFile(path, (err, data) => {
-    if (err) {
-      console.log(arr);
-    } else {
-      res.end(data)
-    }
-  })
+  console.log(`listening on port ${PORT}!`);
 });
 
-server.listen(8080, 'localhost', () => {
-  console.log('listening for request')
-})
